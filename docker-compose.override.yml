@@ -1,0 +1,21 @@
+services:
+  docker.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+    ports:
+      - "5010:8080"
+  docker2.api:
+    environment:
+      - Services:Docker1BaseUrl=http://docker.api:8080
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=Password12*
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/docker_certificates/my_certificate.pfx
+    ports:
+      - "5020:8080"
+      - "5021:8081"
+    volumes:
+    - c:/Certificates:/docker_certificates 
+

@@ -10,8 +10,8 @@ namespace Microservice2.API.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            await orderService.GetOrder();
-            return Ok();
+            var result = await orderService.GetOrder();
+            return Ok(result);
         }
     }
 }

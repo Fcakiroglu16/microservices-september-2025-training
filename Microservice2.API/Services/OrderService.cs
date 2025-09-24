@@ -6,7 +6,7 @@ namespace Microservice2.API.Services
 
     public class OrderService(HttpClient client)
     {
-        public async Task GetOrder()
+        public async Task<GetOrderResponse?> GetOrder()
         {
             var response = await client.GetAsync("/api/orders");
 
@@ -14,10 +14,13 @@ namespace Microservice2.API.Services
             if (response.IsSuccessStatusCode)
             {
                 var newGetOrderResponse = await response.Content.ReadFromJsonAsync<GetOrderResponse>();
+
+                return newGetOrderResponse!;
             }
             else
             {
                 var problemDetails = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+                return null;
             }
         }
     }

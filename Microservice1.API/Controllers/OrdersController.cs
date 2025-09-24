@@ -47,16 +47,6 @@ namespace Microservice1.API.Controllers
         [HttpGet]
         public IActionResult Get()
         {
-            throw new Exception("db hatası");
-            //var problemDetails = new ProblemDetails()
-            //{
-            //    Title = "Ürün bulunamadı",
-            //    Detail = "id 5 olan ürün bulunamadı",
-            //    Status = 404,
-
-            //};
-            //return NotFound(problemDetails);
-
             return Ok(new { Id = 1, OrderCode = "123" });
         }
     }

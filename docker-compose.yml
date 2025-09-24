@@ -1,0 +1,20 @@
+services:
+  docker.api:
+    image: dockerapi-image:vv1
+    build:
+      context: .
+      dockerfile: Docker.API/Dockerfile
+  docker2.api:
+    image: dockerapi2-image:vv1
+    build:
+      context: .
+      dockerfile: Docker2.API/Dockerfile
+  sql.data:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Password12*
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlvolume:/var/opt/mssql

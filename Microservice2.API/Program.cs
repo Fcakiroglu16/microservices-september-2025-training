@@ -53,8 +53,12 @@ var circuitAdvancedBreakerPolicy = HttpPolicyExtensions
 var timeoutPolicy = Policy.TimeoutAsync<HttpResponseMessage>(5);
 var combinedPolicy = Policy.WrapAsync(retryPolicy, circuitBreakerPolicy, timeoutPolicy);
 
-builder.Services.AddHttpClient<OrderService>(options => { options.BaseAddress = new Uri("http://localhost:5037"); })
+builder.Services.AddHttpClient<OrderService>(options =>
+    {
+        options.BaseAddress = new Uri(builder.Configuration.GetSection("Services")["Microservice1BaseUrl"]!);
+    })
     .AddPolicyHandler(combinedPolicy);
+
 
 var app = builder.Build();
 
