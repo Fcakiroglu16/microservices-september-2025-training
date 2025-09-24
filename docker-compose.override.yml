@@ -2,9 +2,11 @@ services:
   docker.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTP_PORTS=8080,
+      - ConnectionStrings:SqlServer=Server=sql.data,1500;Database=OrderDb;User=Sa;Password=Password12*;Trusted_Connection=False;TrustServerCertificate=True;Integrated Security=False
     ports:
-      - "5010:8080"
+      - "80:8080"
+      - "443:8081"
   docker2.api:
     environment:
       - Services:Docker1BaseUrl=http://docker.api:8080
