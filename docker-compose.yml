@@ -1,22 +1,49 @@
 services:
-  docker.api:
-    image: dockerapi-image:vv1
-    build:
-      context: .
-      dockerfile: Docker.API/Dockerfile
-  docker2.api:
-    image: dockerapi2-image:vv1
-    build:
-      context: .
-      dockerfile: Docker2.API/Dockerfile
-  sql.data:
-    image: mcr.microsoft.com/mssql/server:2022-latest
+  keycloak_microservice:
+    restart: always
+    container_name: keycloak_microservice_container
+    image: quay.io/keycloak/keycloak:25.0
+    command: start
     environment:
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=Password12*
+      KC_HOSTNAME_PORT: 8080
+      KC_HOSTNAME_STRICT_BACKCHANNEL: false
+      KC_HTTP_ENABLED: true
+      KC_HOSTNAME_STRICT_HTTPS: false
+      KC_HOSTNAME_STRICT: false
+      KC_HEALTH_ENABLED: true
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres.db.keycloak_microservice/${POSTGRES_DB}
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "1500:1433"
+      - "8050:8080"
+    depends_on:
+      - postgres.db.keycloak_microservice
+  postgres.db.keycloak_microservice:
+    restart: always
+    image: postgres:16.2
+    container_name: postgres.db.keycloak.container_microservice
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5532:5432"
     volumes:
-      - sqlvolume:/var/opt/mssql
+      - posrgres.db.keycloak.volume_microservice:/var/lib/postgresql/data
+  postgres.db.keycloak.ui:
+    restart: always
+    image: dpage/pgadmin4
+    container_name: postgres.db.keycloak.container.ui_microservice
+    ports:
+      - "8850:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user-name@domain-name.com
+      PGADMIN_DEFAULT_PASSWORD: strong-password
+    volumes:
+      - posrgres.db.keycloak.ui.volume_microservice:/var/lib/pgadmin
 volumes:
-    sqlvolume:
+    posrgres.db.keycloak.ui.volume_microservice:
+    posrgres.db.keycloak.volume_microservice:
